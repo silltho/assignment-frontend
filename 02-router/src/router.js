@@ -1,56 +1,65 @@
+import $ from 'jquery'
+
 var routes = [];
 
 export default function(href, handler) {
-  if(handler != undefined) {
+  if(href && handler) {
     routes[href] = handler; // register new route
-  } else if(href != undefined) {
-    if(!route(href)) defaultRoute();
+  }
+  if(href && !handler) {
+    if(!goto(href)) gotoDefaultRoute();
+  }
+  if(!href && !handler){
+    startRouting();
   }
 
-  function route(href) {
-    if(typeof routes[href] == 'function') {
-      window.history.pushState({href: href}, '', href);
-      routes[href](); // route found
-      return true;
+  function goto(href) {
+    for(let route in routes){
+      let param, paramStart;
+
+      if(route === href) {
+        window.history.pushState({href: href}, '', href);
+        routes[route]();
+        return true;
+      }
+
+      paramStart = route.indexOf(':');
+      if(paramStart >= 0) {
+        param = href.substring(paramStart, href.length);
+        if (route.substring(0, paramStart) === href.substring(0, paramStart)) {
+          window.history.pushState({href: href}, '', href);
+          routes[route](param)
+          return true;
+        }
+      }
     }
     return false;
   }
 
-  function defaultRoute() {
+  function gotoDefaultRoute() {
     if(typeof routes['*'] == 'function') {
       window.history.pushState({href: '*'}, '', 'notFound');
-      routes['*'](); // show error route
+      routes['*']();
       return true;
     }
     return false;
   }
 
-  //if (testHrefParams(href)) routes[getHrefWithoutParams(href)] = handler;
+  function startRouting(){
+    let aTags = $('a');
+    for(let i = 0; i < aTags.length; i++){
+      aTags[i].addEventListener("click", (e) => {
+        e.preventDefault();
+        goto($(e.currentTarget).attr("href"));
+      });
+    }
 
-  /*if(testHrefParams(href)) {
-   routes[getHrefWithoutParams(href)]({id: getHrefParamValue(href)})
-   // /player/:id
-   // /player/1234
-   }*/
+    window.addEventListener('load', function(e) {
+      goto(window.location.pathname); //handle path after pageload
+    })
 
-  /*function getHrefWithoutParams(href){
-    var regex = /.*(?=\/:)/;
-    return href.exec(regex);
+    window.addEventListener('popstate', function(e) {
+      goto(e.state.href); //handle path after back or forward button
+    })
   }
-
-  function getHrefParam(href){
-    var regex = /.*(?=\/:)/;
-    return href.exec(regex);
-  }
-
-  function getHrefParamValue(href){
-    var tmp = getHrefWithoutParams(href);
-    var regex = new RegExp('(?:'+ tmp +').*');
-    return href.exec(regex);
-  }
-
-  function testHrefParams(href){
-    var regex = /(?=\/:\w*)/;
-    return href.test(regex);
-  }*/
 }
