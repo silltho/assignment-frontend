@@ -24,7 +24,7 @@ export default function(href, handler) {
       }
 
       paramStart = route.indexOf(':');
-      if(paramStart >= 0) {
+      if(paramStart >= 0) { //handle param
         param = href.substring(paramStart, href.length);
         if (route.substring(0, paramStart) === href.substring(0, paramStart)) {
           window.history.pushState({href: href}, '', href);
