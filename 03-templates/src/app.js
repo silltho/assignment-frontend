@@ -1,8 +1,7 @@
 import $ from 'jquery'
 import router from './router'
 import homeTpl from './templates/home.hbs'
-import magnusTpl from './templates/magnus.hbs'
-import sergeyTpl from './templates/sergey.hbs'
+import playerTpl from './templates/player.hbs'
 import contactTpl from './templates/contact.hbs'
 import notFoundTpl from './templates/not-found.hbs'
 
@@ -17,16 +16,26 @@ function contact() {
 }
 
 function players(ctx) {
-  let tpl = () => {}
+  let player;
   switch (ctx.params.player) {
     case 'magnus':
-      tpl = magnusTpl
+      player = {
+        id: 1,
+        name: "magnus",
+        description: "Magnus description",
+        imageHref: "https://cdn.worldchess.com/static/img/nyfide/carlsen_2x.png"
+      }
       break;
     case 'sergey':
-      tpl = sergeyTpl
+      player = {
+        id: 2,
+        name: "sergey",
+        description: "Sergey description",
+        imageHref: "https://cdn.worldchess.com/static/img/nyfide/karjakin_2x.png"
+      }
       break;
   }
-  $app.html(tpl())
+  $app.html(playerTpl(player))
 }
 
 function notFound() {
