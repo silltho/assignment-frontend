@@ -16,4 +16,12 @@ export function es5() {
 }
 
 export function es6() {
+  let o = {
+    list: [1, 2, 3, 4, 5],
+    result: 0,
+  }
+
+  o.result = o.list.reduce((sum, x) => sum + x);
+
+  return o
 }
