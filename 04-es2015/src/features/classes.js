@@ -11,4 +11,15 @@ export function es5(val) {
 }
 
 export function es6(val) {
+  class C {
+    constructor(val) {
+      this.val = val;
+    }
+    say() {
+      return this.val;
+    }
+  }
+
+  let o = new C(val)
+  return o.say()
 }
