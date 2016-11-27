@@ -11,4 +11,9 @@ export function es5() {
 }
 
 export function es6() {
+  function d(args) {
+    const {x = 0, y = 0, z = 0} = args
+    return x + y + z
+  }
+  return d
 }
